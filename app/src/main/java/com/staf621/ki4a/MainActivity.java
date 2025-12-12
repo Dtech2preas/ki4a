@@ -63,13 +63,11 @@ public class MainActivity extends AppCompatActivity {
     // Handler for Config Icon Menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_config:
-                Intent settingsIntent = new Intent().setClass(
-                        MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
-            default:
-                break;
+        int id = item.getItemId();
+        if (id == R.id.action_config) {
+            Intent settingsIntent = new Intent().setClass(
+                    MainActivity.this, SettingsActivity.class);
+            startActivity(settingsIntent);
         }
 
         return true;
