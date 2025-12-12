@@ -38,28 +38,26 @@ public class ShowLogActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                //Let's go back to main Activity
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
-                return true;
-            case R.id.refresh_log:
-                log_text.setText(Html.fromHtml(MyLog.dump()));
-                return true;
-            case R.id.copy_log:
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("label", log_text.getText());
-                clipboard.setPrimaryClip(clip);
-                return true;
-            case R.id.email_log:
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto","", null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Ki4a Application Log");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, log_text.getText().toString());
-                startActivity(Intent.createChooser(emailIntent, "Send email..."));
-            default:
-                break;
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            //Let's go back to main Activity
+            dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+            dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+            return true;
+        } else if (id == R.id.refresh_log) {
+            log_text.setText(Html.fromHtml(MyLog.dump()));
+            return true;
+        } else if (id == R.id.copy_log) {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("label", log_text.getText());
+            clipboard.setPrimaryClip(clip);
+            return true;
+        } else if (id == R.id.email_log) {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", "", null));
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Ki4a Application Log");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, log_text.getText().toString());
+            startActivity(Intent.createChooser(emailIntent, "Send email..."));
         }
         return super.onOptionsItemSelected(item);
     }
