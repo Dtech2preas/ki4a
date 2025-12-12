@@ -1,0 +1,40 @@
+name: Android Build
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
+
+    - name: Prepare Release Artifacts
+      run: |
+        mkdir release
+        mv app/build/outputs/apk/debug/*.apk release/
+        cd release
+        mv *.apk Ki4a-Custom-Build-${{ github.run_number }}.apk
+
+    - name: Upload Release
+      uses: actions/upload-artifact@v4
+      with:
+        name: ki4a-release-${{ github.run_number }}
+        path: release/

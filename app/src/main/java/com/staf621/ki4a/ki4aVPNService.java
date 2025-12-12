@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.VpnService;
 import android.os.ParcelFileDescriptor;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 import java.io.IOException;
 import java.util.List;

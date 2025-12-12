@@ -34,6 +34,19 @@
         android:textColor="#000000"
         android:background="@color/colorTransparent"/>
 
+    <EditText
+        android:id="@+id/payload_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/imageButton_status"
+        android:layout_marginBottom="20dp"
+        android:background="#80FFFFFF"
+        android:hint="HTTP Payload (e.g. GET / HTTP/1.1[crlf]Host: example.com[crlf][crlf])"
+        android:padding="10dp"
+        android:textColor="#000000"
+        android:inputType="textMultiLine"
+        android:maxLines="3"/>
+
     <!--<com.adclient.android.sdk.view.AdClientView
         android:id="@+id/adClientView"
         android:layout_width="fill_parent"

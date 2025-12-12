@@ -1,6 +1,6 @@
 package com.staf621.ki4a;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,7 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.VpnService;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -22,6 +22,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.text.Editable;
+import android.text.TextWatcher;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected static TextView text_status;
     protected static MainActivity myMainActivity;
     protected DataUpdateReceiver dataUpdateReceiver;
+    protected EditText payloadInput;
 
     // This Class is called from ki4aService to notify a status change
     private class DataUpdateReceiver extends BroadcastReceiver {
@@ -94,6 +97,23 @@ public class MainActivity extends AppCompatActivity {
         refresh_status_img(ki4aService.current_status);
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Payload Input
+        payloadInput = findViewById(R.id.payload_input);
+        if (payloadInput != null) {
+            String savedPayload = preferences.getString("payload_text", "");
+            payloadInput.setText(savedPayload);
+            payloadInput.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(Editable s) {
+                    preferences.edit().putString("payload_text", s.toString()).apply();
+                }
+            });
+        }
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
