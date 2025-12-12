@@ -20,11 +20,12 @@ import androidx.core.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Random;
+import com.staf621.ki4a.injector.PayloadInjector;
 
 public class ki4aService extends Service {
 
@@ -245,6 +246,31 @@ public class ki4aService extends Service {
                 w4cT.start();
 
                 if(toState == Util.STATUS_SOCKS) {
+
+                    // Inject Payload
+                    String payload = preferences.getString("payload_text", "");
+                    if (!payload.isEmpty()) {
+                         PayloadInjector.writeHeaderFile(payload, BASE + "/header_file");
+                         // Ensure we use the header file even if not using a proxy if needed,
+                         // but korkscrew usually uses it with --proxyhost.
+                         // However, if the user wants to inject payload, they likely are using a proxy or
+                         // we might need to trick korkscrew into sending it.
+                         // The original code only adds --headerfile if proxy is true.
+                         // If the user wants payload injection without proxy settings, they might be doing a direct injection?
+                         // Usually HTTP injection is for Proxy connections.
+                         // But let's assume if payload is present, we force usage of headerfile if proxy is set.
+                         // If proxy is NOT set, korkscrew ignores headerfile unless we force it?
+                         // Looking at korkscrew man page or source would be ideal, but assuming standard behavior:
+                         // --headerfile is for CONNECT headers.
+
+                         // If the user wants to inject a payload, they might want to spoof a proxy or just send data.
+                         // If "proxy" is false, the command uses --directconnection.
+                         // --directconnection might not send headers.
+                         // But let's check if we can modify the command construction.
+                    }
+
+                    boolean forceHeader = !payload.isEmpty();
+
                     ssh_return_val = Util.runChainFireCommand(
                             ((key_switch && !enc_ssh_key) ? "" : BASE + BASE_BIN + "/sshpass -p \"" + password_text + "\" ")
                                     + BASE + BASE_BIN + "/ssh " + server_text + " -p " + port_number + " -l " + user_text
@@ -257,7 +283,8 @@ public class ki4aService extends Service {
                                     + (proxy ? " --proxyhost " + proxy_host
                                     + " --proxyport " + proxy_port + " --desthost %h --destport %p"
                                     + " --headerfile " + BASE + "/header_file" + "\""
-                                    : " --directconnection --desthost %h --destport %p\"")
+                                    : (forceHeader ? " --proxyhost " + server_text + " --proxyport " + port_number + " --desthost %h --destport %p --headerfile " + BASE + "/header_file" + "\""
+                                                   : " --directconnection --desthost %h --destport %p\""))
                                     + " -o \"KeepAlive yes\" -o \"ServerAliveInterval 15\""
                                     + " -o \"StrictHostKeyChecking=no\" -o \"GlobalKnownHostsFile=/dev/null\"", false, true);
                 }

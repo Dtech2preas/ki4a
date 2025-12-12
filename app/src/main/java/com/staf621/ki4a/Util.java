@@ -8,7 +8,7 @@ import android.net.LocalSocket;
 import android.net.LocalSocketAddress;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
 import java.io.File;

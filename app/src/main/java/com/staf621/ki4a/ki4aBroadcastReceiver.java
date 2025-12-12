@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 public class ki4aBroadcastReceiver extends BroadcastReceiver {
     @Override
